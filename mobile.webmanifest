@@ -1,0 +1,13 @@
+{
+  "name": "TIKI móvil",
+  "short_name": "TIKI",
+  "description": "Edición rápida de video en el iPhone",
+  "start_url": "./mobile.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "./mobile-icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
