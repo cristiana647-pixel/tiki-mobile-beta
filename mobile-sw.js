@@ -1,5 +1,6 @@
 const CACHE_NAME = "tiki-mobile-v2";
 const scoped = (path) => new URL(path, self.registration.scope).pathname;
+const ROOT_PAGE = scoped("");
 const MOBILE_PAGE = scoped("mobile.html");
 const isolated = (response) => {
   const headers = new Headers(response.headers);
@@ -15,6 +16,9 @@ self.addEventListener("install", (event) => {
     if (!page.ok) throw new Error("No se pudo guardar TIKI móvil sin conexión");
     const html = await page.clone().text();
     await cache.put(MOBILE_PAGE, isolated(page));
+    const root = await fetch(ROOT_PAGE, { cache: "reload" });
+    if (!root.ok) throw new Error("No se pudo guardar la portada de TIKI móvil");
+    await cache.put(ROOT_PAGE, isolated(root));
     const paths = [...html.matchAll(/(?:src|href)="([^"]+)"/g)]
       .map((match) => new URL(match[1], self.registration.scope).pathname)
       .filter((path) => path.startsWith(scoped("assets/")) ||
@@ -41,7 +45,8 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (event.request.method !== "GET" || url.origin !== self.location.origin ||
-    !(url.pathname === MOBILE_PAGE || url.pathname.startsWith(scoped("assets/")) ||
+    !(url.pathname === ROOT_PAGE || url.pathname === MOBILE_PAGE ||
+      url.pathname.startsWith(scoped("assets/")) ||
       url.pathname.startsWith(scoped("whisper/")) ||
       url.pathname === scoped("mobile.webmanifest") || url.pathname === scoped("mobile-icon.svg"))) return;
   event.respondWith((async () => {
