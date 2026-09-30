@@ -1,4 +1,4 @@
-const CACHE_NAME = "tiki-mobile-v5";
+const CACHE_NAME = "tiki-mobile-v6";
 const scoped = (path) => new URL(path, self.registration.scope).pathname;
 const ROOT_PAGE = scoped("");
 const MOBILE_PAGE = scoped("mobile.html");
